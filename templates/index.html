@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Stock Trend Prediction System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 1200px;
+            margin-top: 40px;
+        }
+        .chart-container {
+            margin-top: 40px;
+        }
+        .table-responsive {
+            margin-top: 30px;
+        }
+        footer {
+            margin-top: 50px;
+            padding: 20px 0;
+            text-align: center;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- Title -->
+    <h1 class="text-center mb-4">📈 Stock Trend Prediction System</h1>
+    <p class="text-center text-muted">
+        BiLSTM-based stock trend prediction using technical indicators
+    </p>
+
+    <!-- Input Form -->
+    <form method="POST" class="card p-4 shadow-sm">
+        <div class="mb-3">
+            <label for="stock" class="form-label fw-bold">Enter Stock Ticker</label>
+            <input type="text"
+                   class="form-control"
+                   id="stock"
+                   name="stock"
+                   placeholder="Example: AAPL, GOOGL, POWERGRID.NS"
+                   required>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">
+            Predict Trend
+        </button>
+    </form>
+
+    <!-- EMA 20 & 50 -->
+    {% if plot_path_ema_20_50 %}
+    <div class="chart-container">
+        <h3 class="text-center">Closing Price with EMA 20 & EMA 50</h3>
+        <img src="{{ url_for('static', filename='ema_20_50.png') }}"
+             class="img-fluid rounded shadow"
+             alt="EMA 20 50">
+    </div>
+    {% endif %}
+
+    <!-- EMA 100 & 200 -->
+    {% if plot_path_ema_100_200 %}
+    <div class="chart-container">
+        <h3 class="text-center">Closing Price with EMA 100 & EMA 200</h3>
+        <img src="{{ url_for('static', filename='ema_100_200.png') }}"
+             class="img-fluid rounded shadow"
+             alt="EMA 100 200">
+    </div>
+    {% endif %}
+
+    <!-- Prediction vs Actual -->
+    {% if plot_path_prediction %}
+    <div class="chart-container">
+        <h3 class="text-center">Predicted vs Actual Trend</h3>
+        <img src="{{ url_for('static', filename='stock_prediction.png') }}"
+             class="img-fluid rounded shadow"
+             alt="Prediction Chart">
+    </div>
+    {% endif %}
+
+    <!-- Descriptive Statistics -->
+    {% if data_desc %}
+    <div class="table-responsive">
+        <h3 class="text-center mt-5">Descriptive Statistics</h3>
+        {{ data_desc | safe }}
+    </div>
+    {% endif %}
+
+    <!-- Download Dataset -->
+    {% if dataset_link %}
+    <div class="text-center mt-4">
+        <a href="{{ url_for('download_file', filename=dataset_link.split('/')[-1]) }}"
+           class="btn btn-success">
+            ⬇ Download Dataset (CSV)
+        </a>
+    </div>
+    {% endif %}
+
+</div>
+
+<footer>
+    <p>
+        Final Year Project | Stock Trend Prediction using BiLSTM<br>
+        © 2026
+    </p>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

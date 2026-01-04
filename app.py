@@ -18,17 +18,15 @@ plt.style.use("fivethirtyeight")
 
 app = Flask(__name__)
 
-# -----------------------------
-# Load trained model & scaler using Absolute Paths
-# -----------------------------
-# This ensures the app finds the files in Codespaces and cloud servers
+# Use absolute paths to find the models
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, "models", "stock_prediction_model.h5")
 SCALER_PATH = os.path.join(BASE_DIR, "models", "scaler.pkl")
 
-# Check if model exists to provide a clear error message if it's missing from GitHub
+# Verify the file actually exists on the disk
 if not os.path.exists(MODEL_PATH):
-    raise FileNotFoundError(f"Model file not found at {MODEL_PATH}. Check if it was pushed to Git.")
+    print(f"ERROR: Looking for model at {MODEL_PATH}")
+    print(f"Current Directory contains: {os.listdir(BASE_DIR)}")
 
 model = load_model(MODEL_PATH)
 scaler = joblib.load(SCALER_PATH)

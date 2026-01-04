@@ -9,25 +9,32 @@ import joblib
 from flask import Flask, render_template, request, send_file
 from tensorflow.keras.models import load_model
 
+# Import custom modules from your src directory
 from src.features import add_technical_indicators
 from src.preprocessing import create_sequences
 
+# Set plot style
 plt.style.use("fivethirtyeight")
 
 app = Flask(__name__)
 
 # -----------------------------
-# Load trained model & scaler
+# Load trained model & scaler using Absolute Paths
 # -----------------------------
-MODEL_PATH = "models/stock_prediction_model.h5"
-SCALER_PATH = "models/scaler.pkl"
+# This ensures the app finds the files in Codespaces and cloud servers
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "models", "stock_prediction_model.h5")
+SCALER_PATH = os.path.join(BASE_DIR, "models", "scaler.pkl")
+
+# Check if model exists to provide a clear error message if it's missing from GitHub
+if not os.path.exists(MODEL_PATH):
+    raise FileNotFoundError(f"Model file not found at {MODEL_PATH}. Check if it was pushed to Git.")
 
 model = load_model(MODEL_PATH)
 scaler = joblib.load(SCALER_PATH)
 
 FEATURES = ['Open','High','Low','Close','Volume','MA20','MA50','MACD','RSI']
 WINDOW_SIZE = 60
-
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -58,6 +65,10 @@ def index():
         y_pred_prob = model.predict(X)
         y_pred = (y_pred_prob.flatten() > 0.5).astype(int)
 
+        # Ensure static folder exists for saving plots
+        if not os.path.exists(os.path.join(BASE_DIR, "static")):
+            os.makedirs(os.path.join(BASE_DIR, "static"))
+
         # -----------------------------
         # Plot EMA 20 / 50
         # -----------------------------
@@ -69,9 +80,9 @@ def index():
         plt.plot(ema20, label="EMA 20")
         plt.plot(ema50, label="EMA 50")
         plt.legend()
-        plt.title("EMA 20 & 50")
-        ema_20_50_path = "static/ema_20_50.png"
-        plt.savefig(ema_20_50_path)
+        plt.title(f"{stock} EMA 20 & 50")
+        ema_20_50_path = os.path.join("static", "ema_20_50.png")
+        plt.savefig(os.path.join(BASE_DIR, ema_20_50_path))
         plt.close()
 
         # -----------------------------
@@ -85,9 +96,9 @@ def index():
         plt.plot(ema100, label="EMA 100")
         plt.plot(ema200, label="EMA 200")
         plt.legend()
-        plt.title("EMA 100 & 200")
-        ema_100_200_path = "static/ema_100_200.png"
-        plt.savefig(ema_100_200_path)
+        plt.title(f"{stock} EMA 100 & 200")
+        ema_100_200_path = os.path.join("static", "ema_100_200.png")
+        plt.savefig(os.path.join(BASE_DIR, ema_100_200_path))
         plt.close()
 
         # -----------------------------
@@ -97,14 +108,14 @@ def index():
         plt.plot(y[-200:], label="Actual Trend")
         plt.plot(y_pred[-200:], label="Predicted Trend")
         plt.legend()
-        plt.title("Predicted vs Actual Trend")
-        prediction_path = "static/stock_prediction.png"
-        plt.savefig(prediction_path)
+        plt.title(f"{stock} Predicted vs Actual Trend")
+        prediction_path = os.path.join("static", "stock_prediction.png")
+        plt.savefig(os.path.join(BASE_DIR, prediction_path))
         plt.close()
 
         # Save dataset
-        csv_path = f"static/{stock}_dataset.csv"
-        df.to_csv(csv_path, index=False)
+        csv_path = os.path.join("static", f"{stock}_dataset.csv")
+        df.to_csv(os.path.join(BASE_DIR, csv_path), index=False)
 
         return render_template(
             "index.html",
@@ -117,13 +128,10 @@ def index():
 
     return render_template("index.html")
 
-
 @app.route('/download/<filename>')
 def download_file(filename):
-    return send_file(f"static/{filename}", as_attachment=True)
-
+    return send_file(os.path.join(BASE_DIR, "static", filename), as_attachment=True)
 
 if __name__ == "__main__":
-    import os
-    port = int(os.environ.get("PORT", 5000))  # Port set by cloud platform
+    port = int(os.environ.get("PORT", 5000))  # Port set by cloud platform (e.g., Railway)
     app.run(debug=False, host="0.0.0.0", port=port)

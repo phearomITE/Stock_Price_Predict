@@ -1,9 +1,19 @@
-tensorflow-cpu
-numpy
-pandas
-scikit-learn
-flask
-gunicorn
-matplotlib
-yfinance
-joblib
+# Core ML Framework - UPGRADE to latest stable
+tensorflow-cpu==2.20.0        # Latest stable (Aug 2025) [web:476]
+
+# Data Processing - Compatible versions
+numpy==1.26.4                   # TF 2.19 compatible
+pandas==2.2.2                   # Latest stable
+scikit-learn==1.5.1             # Latest stable
+
+# Web Framework
+flask==3.0.3                    # Latest stable
+gunicorn==22.0.0                # ✅ Keep (perfect)
+
+# Data Visualization
+matplotlib==3.9.2               # Latest stable
+yfinance==0.2.44                # Latest stable
+
+# Utilities
+joblib==1.4.2                   # Latest stable
+protobuf==5.28.3                # TF 2.19 compatible

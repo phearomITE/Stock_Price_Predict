@@ -1,0 +1,1 @@
+{"features": ["Open", "High", "Low", "Close", "Volume", "MA20", "MA50", "MACD", "RSI"], "lookback": 30, "ticker": "GOOGL", "accuracy": 0.5204918032786885, "baseline": 0.49385245901639346, "returns_model": 7.790200129337401e+31, "returns_bh": 1.9445878519279407}

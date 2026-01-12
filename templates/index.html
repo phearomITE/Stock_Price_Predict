@@ -1,122 +1,308 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <title>🚀 Professional Stock Trading Dashboard 2026 - AI Predictions</title>
     <meta charset="UTF-8">
-    <title>Stock Trend Prediction System</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-        .container {
-            max-width: 1200px;
-            margin-top: 40px;
-        }
-        .chart-container {
-            margin-top: 40px;
-        }
-        .table-responsive {
-            margin-top: 30px;
-        }
-        footer {
-            margin-top: 50px;
-            padding: 20px 0;
-            text-align: center;
-            color: #666;
-        }
-    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
+<body style="background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2a2a4a 100%); color: white; min-height: 100vh;">
 
-<body>
+    <!-- 🔥 LIVE TICKER BAR -->
+    <div class="bg-dark p-3 border-bottom border-danger position-sticky top-0 z-3" style="box-shadow: 0 4px 20px rgba(220,53,69,0.3);" id="live-ticker">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                <h5 class="mb-2 mb-md-0 text-white">
+                    <i class="fas fa-broadcast me-2 text-danger"></i>
+                    LIVE Market Data <span class="badge bg-danger ms-2" id="last-update">Loading...</span>
+                </h5>
+                <div id="live-prices" class="fs-6 fw-bold d-flex flex-wrap gap-3">
+                    <!-- Live prices injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
 
-<div class="container">
-
-    <!-- Title -->
-    <h1 class="text-center mb-4">📈 Stock Trend Prediction System</h1>
-    <p class="text-center text-muted">
-        BiLSTM-based stock trend prediction using technical indicators
-    </p>
-
-    <!-- Input Form -->
-    <form method="POST" class="card p-4 shadow-sm">
-        <div class="mb-3">
-            <label for="stock" class="form-label fw-bold">Enter Stock Ticker</label>
-            <input type="text"
-                   class="form-control"
-                   id="stock"
-                   name="stock"
-                   placeholder="Example: AAPL, GOOGL, POWERGRID.NS"
-                   required>
+    <div class="container py-5">
+        <!-- 🚀 Hero Section -->
+        <div class="text-center mb-6">
+            <h1 class="display-2 fw-bold mb-4 text-white drop-shadow">
+                <i class="fas fa-chart-line text-danger me-3"></i>
+                Professional Trading Dashboard
+            </h1>
+            <p class="lead fs-3 text-white-50 mb-0">Real-time AI-powered trading signals • 5 Technical Indicators • LSTM Predictions</p>
         </div>
 
-        <button type="submit" class="btn btn-primary w-100">
-            Predict Trend
-        </button>
-    </form>
+        <!-- 🔥 UPGRADED ANALYSIS FORM + PREDICTION BUTTONS -->
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-10 col-xl-8">
+                <form method="POST" action="/analyze" class="glass-card p-5">
+                    <div class="input-group input-group-xl mb-4">
+                        <span class="input-group-text bg-danger text-white fs-3 px-4">
+                            <i class="fas fa-stock"></i>
+                        </span>
+                        <input type="text" name="stock" class="form-control fs-3 border-0 py-3 px-5" 
+                               placeholder="Enter stock ticker: AAPL, GOOGL, MSFT, TSLA, NVDA..." 
+                               value="{{ stock|default('GOOGL') }}" required autocomplete="off">
+                        <button type="submit" class="btn btn-danger btn-xl px-6 py-3 fs-3 fw-bold">
+                            <i class="fas fa-bolt me-3"></i>ANALYZE NOW
+                        </button>
+                    </div>
+                    
+                    <!-- 🔥 LSTM PREDICTION TIMEFRAME BUTTONS -->
+                    <div class="d-flex flex-wrap gap-3 justify-content-center">
+                        <button type="submit" name="pred_days" value="1" class="btn btn-warning btn-lg px-5 py-3 prediction-btn active">
+                            <i class="fas fa-clock me-2"></i>1 Day Forecast
+                        </button>
+                        <button type="submit" name="pred_days" value="5" class="btn btn-info btn-lg px-5 py-3 prediction-btn">
+                            <i class="fas fa-calendar-week me-2"></i>5 Days Forecast
+                        </button>
+                        <button type="submit" name="pred_days" value="7" class="btn btn-success btn-lg px-5 py-3 prediction-btn">
+                            <i class="fas fa-calendar-alt me-2"></i>7 Days Forecast
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
-    <!-- EMA 20 & 50 -->
-    {% if plot_path_ema_20_50 %}
-    <div class="chart-container">
-        <h3 class="text-center">Closing Price with EMA 20 & EMA 50</h3>
-        <img src="{{ url_for('static', filename='ema_20_50.png') }}"
-             class="img-fluid rounded shadow"
-             alt="EMA 20 50">
+        <!-- 🎯 MAIN TRADING SIGNAL -->
+        {% if recommendation %}
+        <div class="text-center mb-6">
+            <div class="display-2 p-6 rounded-5 shadow-3xl mx-auto {{ signal_class }} prediction-pro mb-4" style="max-width: 900px;">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <i class="fas fa-{% if 'BUY' in recommendation %}rocket{% elif 'SELL' in recommendation %}bomb{% else %}pause-circle{% endif %} fa-4x mb-3"></i>
+                    </div>
+                    <div class="col">
+                        <div class="h1 fw-bold mb-2">{{ recommendation }}</div>
+                        <div class="fs-2 text-white-75">{{ confidence }} Confidence</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🔥 LSTM PREDICTION SUMMARY CARDS -->
+        <div class="row mb-6">
+            <div class="col-lg-4 mb-4">
+                <div class="glass-card p-4 h-100 text-center prediction-card-1d">
+                    <h4 class="mb-3"><i class="fas fa-clock text-warning me-2"></i>1 Day Forecast</h4>
+                    <div class="display-4 fw-bold mb-2">{{ pred_1d }}</div>
+                    <div class="fs-3 fw-bold {{ 'text-success' if pred_change_1d.startswith('+') else 'text-danger' }}">
+                        {{ pred_change_1d }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <div class="glass-card p-4 h-100 text-center prediction-card-5d">
+                    <h4 class="mb-3"><i class="fas fa-calendar-week text-info me-2"></i>5 Days Forecast</h4>
+                    <div class="display-4 fw-bold mb-2">{{ pred_5d }}</div>
+                    <div class="fs-3 fw-bold {{ 'text-success' if pred_change_5d.startswith('+') else 'text-danger' }}">
+                        {{ pred_change_5d }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <div class="glass-card p-4 h-100 text-center prediction-card-7d">
+                    <h4 class="mb-3"><i class="fas fa-calendar-alt text-success me-2"></i>7 Days Forecast</h4>
+                    <div class="display-4 fw-bold mb-2">{{ pred_7d }}</div>
+                    <div class="fs-3 fw-bold {{ 'text-success' if pred_change_7d.startswith('+') else 'text-danger' }}">
+                        {{ pred_change_7d }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 💼 DETAILED TRADING INTELLIGENCE -->
+        <div class="row mb-6">
+            <div class="col-lg-10 mx-auto">
+                <div class="glass-card p-5">
+                    <h3 class="text-center mb-5 text-white fs-2">
+                        <i class="fas fa-brain text-danger me-3"></i>
+                        AI Trading Intelligence + LSTM Neural Network Report
+                    </h3>
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="trading-message fs-5 lh-lg p-4 rounded-4 mb-4" 
+                                 style="background: rgba(0,0,0,0.4); border-left: 6px solid #ff6b35; line-height: 1.8;">
+                                {{ trading_message | replace('\n', '<br>') | safe }}
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="signal-list">
+                                {% for signal in signals %}
+                                <div class="signal-item mb-3 p-4 rounded-3 fw-semibold signal-{{ signal[0] if signal.startswith('🟢') or signal.startswith('🔴') or signal.startswith('🟡') }}">
+                                    {{ signal }}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- 📈 PROFESSIONAL CHARTS -->
+        {% if plot_dashboard %}
+        <div class="row mb-6">
+            <div class="col-12">
+                <div class="glass-card p-5">
+                    <div class="text-center mb-5">
+                        <h3 class="fs-1 fw-bold text-white mb-2">
+                            <i class="fas fa-chart-area text-danger me-3"></i>
+                            Multi-Indicator Trading Chart + LSTM Predictions
+                        </h3>
+                        <p class="lead text-white-50 mb-0">Price + Moving Averages + Bollinger Bands + RSI + MACD + Volume</p>
+                    </div>
+                    <div class="text-center">
+                        <img src="{{ url_for('static', filename=stock + '_pro_dashboard.png') }}" 
+                             class="img-fluid rounded-4 shadow-lg" style="max-height: 700px; width: 100%;">
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- 📋 RECENT DATA TABLE -->
+        {% if data_desc %}
+        <div class="row mb-5">
+            <div class="col-lg-10 mx-auto">
+                <div class="glass-card p-5">
+                    <h4 class="text-center mb-4 text-white">
+                        <i class="fas fa-table me-2"></i>Latest 5 Days - Key Metrics
+                    </h4>
+                    {{ data_desc | safe }}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- 📥 DOWNLOAD SECTION -->
+        {% if dataset_link %}
+        <div class="text-center mb-5">
+            <a href="/download/{{ dataset_link.split('/')[-1] }}" class="btn btn-outline-light btn-lg px-5 py-3">
+                <i class="fas fa-download me-2"></i>
+                Download Full Analysis CSV
+            </a>
+        </div>
+        {% endif %}
+
+        <!-- ❌ Error Message -->
+        {% if error %}
+        <div class="alert alert-danger text-center glass-card p-6 mb-0">
+            <i class="fas fa-exclamation-triangle me-3 fs-1"></i>
+            <h4 class="mb-3">{{ error }}</h4>
+            <p class="mb-0">Try popular tickers like: AAPL, GOOGL, MSFT, TSLA, NVDA, META, AMZN</p>
+        </div>
+        {% endif %}
     </div>
-    {% endif %}
 
-    <!-- EMA 100 & 200 -->
-    {% if plot_path_ema_100_200 %}
-    <div class="chart-container">
-        <h3 class="text-center">Closing Price with EMA 100 & EMA 200</h3>
-        <img src="{{ url_for('static', filename='ema_100_200.png') }}"
-             class="img-fluid rounded shadow"
-             alt="EMA 100 200">
-    </div>
-    {% endif %}
+    <!-- ⚡ LIVE UPDATE SYSTEM -->
+    <script>
+        async function updateLivePrices() {
+            try {
+                const response = await fetch('/api/live');
+                const liveData = await response.json();
+                
+                const tickerEl = document.getElementById('live-prices');
+                tickerEl.innerHTML = '';
+                
+                Object.entries(liveData).forEach(([ticker, data]) => {
+                    const changeClass = data.change_pct >= 0 ? 'text-success' : 'text-danger';
+                    tickerEl.innerHTML += `
+                        <span class="px-3 py-1 rounded-pill bg-dark" style="border: 2px solid ${data.change_pct >= 0 ? '#28a745' : '#dc3545'};">
+                            <strong>${ticker}</strong>: $${data.price} 
+                            <span class="${changeClass} fw-bold">${data.change_pct >= 0 ? '+' : ''}${data.change_pct}%
+                        </span>
+                        </span>
+                    `;
+                });
+                
+                document.getElementById('last-update').textContent = 
+                    `Updated: ${new Date().toLocaleTimeString('en-US', {hour12: false})}`;
+                    
+            } catch (e) {
+                console.log('Live update failed:', e);
+            }
+        }
 
-    <!-- Prediction vs Actual -->
-    {% if plot_path_prediction %}
-    <div class="chart-container">
-        <h3 class="text-center">Predicted vs Actual Trend</h3>
-        <img src="{{ url_for('static', filename='stock_prediction.png') }}"
-             class="img-fluid rounded shadow"
-             alt="Prediction Chart">
-    </div>
-    {% endif %}
+        // Auto-refresh every 30 seconds
+        updateLivePrices();
+        setInterval(updateLivePrices, 30000);
+        
+        // Auto-focus input
+        document.querySelector('input[name="stock"]').focus();
+    </script>
 
-    <!-- Descriptive Statistics -->
-    {% if data_desc %}
-    <div class="table-responsive">
-        <h3 class="text-center mt-5">Descriptive Statistics</h3>
-        {{ data_desc | safe }}
-    </div>
-    {% endif %}
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Download Dataset -->
-    {% if dataset_link %}
-    <div class="text-center mt-4">
-        <a href="{{ url_for('download_file', filename=dataset_link.split('/')[-1]) }}"
-           class="btn btn-success">
-            ⬇ Download Dataset (CSV)
-        </a>
-    </div>
-    {% endif %}
+    <style>
+        .glass-card {
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 25px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        
+        .prediction-pro.buy-pro { 
+            background: linear-gradient(135deg, #28a745, #20c997, #17a2b8) !important; 
+            box-shadow: 0 20px 60px rgba(40, 167, 69, 0.4);
+        }
+        .prediction-pro.sell-pro { 
+            background: linear-gradient(135deg, #dc3545, #fd7e14, #ffc107) !important; 
+            box-shadow: 0 20px 60px rgba(220, 53, 69, 0.4);
+        }
+        .prediction-pro.hold { 
+            background: linear-gradient(135deg, #6c757d, #adb5bd, #dee2e6) !important; 
+            box-shadow: 0 20px 60px rgba(108, 117, 125, 0.3);
+        }
 
-</div>
+        /* 🔥 PREDICTION BUTTONS */
+        .prediction-btn {
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255,255,255,0.3);
+            font-weight: 600;
+            min-width: 160px;
+        }
+        .prediction-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            border-color: rgba(255,255,255,0.6);
+        }
+        .prediction-btn.active {
+            background: linear-gradient(45deg, #ff6b35, #f7931e) !important;
+            border-color: #ff6b35 !important;
+            box-shadow: 0 10px 30px rgba(255,107,53,0.4);
+        }
 
-<footer>
-    <p>
-        Final Year Project | Stock Trend Prediction using BiLSTM<br>
-        © 2026
-    </p>
-</footer>
-
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+        /* 🔥 PREDICTION CARDS */
+        .prediction-card-1d { border-top: 4px solid #ffc107; }
+        .prediction-card-5d { border-top: 4px solid #17a2b8; }
+        .prediction-card-7d { border-top: 4px solid #28a745; }
+        
+        .signal-item {
+            transition: all 0.3s ease;
+            border-left: 5px solid transparent;
+        }
+        .signal-🟢 { border-left-color: #28a745 !important; }
+        .signal-🔴 { border-left-color: #dc3545 !important; }
+        .signal-🟡 { border-left-color: #ffc107 !important; }
+        .signal-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        
+        .drop-shadow {
+            text-shadow: 0 4px 8px rgba(0,0,0,0.5);
+        }
+        
+        @media (max-width: 768px) {
+            .display-2 { font-size: 2.5rem !important; }
+            .prediction-btn { min-width: 140px; font-size: 0.9rem; }
+        }
+    </style>
 </body>
 </html>

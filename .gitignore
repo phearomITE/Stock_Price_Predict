@@ -1,8 +1,16 @@
-venv/
-__pycache__/
+# Create .gitignore
+echo "__pycache__/
 *.pyc
-*.h5
-*.pkl
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
 .env
 static/*.png
 static/*.csv
+.DS_Store
+.idea/
+.vscode/
+" > .gitignore
